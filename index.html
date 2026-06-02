@@ -98,7 +98,7 @@ button:hover{opacity:.85}
 
 .column{
   background:var(--sams-panel);
-  width:300px;
+  width:320px;
   min-height:250px;
   padding:15px;
   border-radius:12px;
@@ -137,10 +137,10 @@ button:hover{opacity:.85}
 }
 
 .unit-header{
-  display:grid;
-  grid-template-columns: 1fr auto;
-  align-items:start;
-  gap:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
   margin-bottom:8px;
 }
 
@@ -149,13 +149,18 @@ button:hover{opacity:.85}
   user-select:none;
   margin:0;
   line-height:1.1;
-  word-break:break-word;
+  flex:1;
+  min-width:0;
+  max-width:130px;
+  word-break:normal;
+  overflow-wrap:break-word;
 }
 
 .unit-actions{
   display:flex;
   align-items:flex-start;
   gap:6px;
+  flex-shrink:0;
 }
 
 .unit-status-select{
@@ -165,7 +170,7 @@ button:hover{opacity:.85}
   padding:6px 10px;
   border-radius:8px;
   cursor:pointer;
-  min-width:140px;
+  width:150px;
 }
 
 .delete-unit-btn{
