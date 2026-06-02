@@ -137,9 +137,9 @@ button:hover{opacity:.85}
 }
 
 .unit-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+  display:grid;
+  grid-template-columns: 1fr auto;
+  align-items:start;
   gap:10px;
   margin-bottom:8px;
 }
@@ -148,11 +148,13 @@ button:hover{opacity:.85}
   cursor:pointer;
   user-select:none;
   margin:0;
+  line-height:1.1;
+  word-break:break-word;
 }
 
 .unit-actions{
   display:flex;
-  align-items:center;
+  align-items:flex-start;
   gap:6px;
 }
 
@@ -163,7 +165,7 @@ button:hover{opacity:.85}
   padding:6px 10px;
   border-radius:8px;
   cursor:pointer;
-  width:auto;
+  min-width:140px;
 }
 
 .delete-unit-btn{
