@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>MDT SAMS</title>
+
+<style>
+:root{
+  --sams-red:#e30613;
+  --sams-blue:#0057ff;
+  --sams-dark:#0f172a;
+  --sams-panel:#1e293b;
+  --sams-card:#334155;
+  --sams-topbar:#111827;
+  --sams-white:#ffffff;
+}
+
+body{
+  margin:0;
+  background:var(--sams-dark);
+  color:white;
+  font-family:Arial,sans-serif;
+}
+
+.page{display:none}
+.page.active{display:block}
+
+.center-page{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;  
+}
+
+.login-box{
+  background:var(--sams-panel);
+  padding:35px;
+  border-radius:18px;
+  width:360px;
+  text-align:center;
+  border:2px solid var(--sams-red);
+  box-shadow:0 0 25px rgba(227,6,19,.25);
+}
+
+.login-box input{width:90%}
+
+input,button,select{
+  padding:12px;
+  margin:6px;
+  border-radius:8px;
+  border:none;
+}
+
+button{
+  background:var(--sams-red);
+  color:white;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+button:hover{opacity:.85}
+
+.red{background:#dc2626}
+.green{background:#16a34a}
+.blue{background:var(--sams-blue)}
+
+.topbar{
+  padding:20px;
+  background:linear-gradient(90deg, var(--sams-red), var(--sams-blue));
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.topbar h1{
+  margin:0;
+}
+
+.topbar p{
+  margin-right:auto;
+}
+
+.panic-btn{
+  background:#b91c1c;
+  margin-left:auto;
+  font-weight:bold;
+  box-shadow:0 0 12px rgba(227,6,19,.5);
+}
+
+.board{
+  display:flex;
+  flex-wrap:wrap;
+  gap:15px;
+  padding:20px;
+  overflow-x:hidden;
+  align-items:flex-start;
+}
+
+.column{
+  background:var(--sams-panel);
+  width:300px;
+  min-height:250px;
+  padding:15px;
+  border-radius:12px;
+  border-top:4px solid var(--sams-red);
+}
+
+.available-column{
+  background:var(--sams-topbar);
+  border:2px dashed var(--sams-blue);
+}
+
+.card{
+  background:var(--sams-card);
+  padding:12px;
+  border-radius:10px;
+  margin:10px;
+}
+
+.officer{
+  background:var(--sams-card);
+  padding:8px 10px;
+  border-radius:8px;
+  margin:6px 0;
+  cursor:grab;
+  font-size:13px;
+  border-left:4px solid var(--sams-blue);
+}
+
+.patrol-card{
+  background:var(--sams-card);
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+  cursor:grab;
+  border-left:4px solid var(--sams-red);
+}
+
+.unit-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:8px;
+}
+
+.unit-title{
+  cursor:pointer;
+  user-select:none;
+  margin:0;
+}
+
+.unit-actions{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.unit-status-select{
+  background:var(--sams-blue);
+  color:white;
+  font-weight:bold;
+  padding:6px 10px;
+  border-radius:8px;
+  cursor:pointer;
+  width:auto;
+}
+
+.delete-unit-btn{
+  background:#dc2626;
+  padding:6px 9px;
+  border-radius:8px;
+  font-size:12px;
+}
+
+.edit-unit-btn{
+  background:#475569;
+  padding:6px 9px;
+  border-radius:8px;
+  font-size:12px;
+}
+
+.unit-info{
+  margin:4px 0 12px 0;
+}
+
+.radio-badge{
+  display:inline-block;
+  background:#7f1d1d;
+  color:white;
+  font-size:11px;
+  font-weight:bold;
+  padding:3px 7px;
+  border-radius:4px;
+  margin-bottom:5px;
+  line-height:1.2;
+}
+
+.medical-container{
+  display:flex;
+  flex-wrap:wrap;
+  gap:4px;
+  margin-top:2px;
+  margin-bottom:8px;
+}
+
+.medical-badge{
+  display:inline-block;
+  background:#0f4cff;
+  color:white;
+  font-size:11px;
+  font-weight:bold;
+  padding:3px 7px;
+  border-radius:4px;
+  line-height:1.2;
+}
+
+.vehicle-badge{
+  display:inline-block;
+  background:#16a34a;
+  color:white;
+  font-size:11px;
+  font-weight:bold;
+  padding:3px 7px;
+  border-radius:4px;
+  margin-bottom:5px;
+  line-height:1.2;
+}
+
+.panic-popup{
+  position:fixed;
+  top:25px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#dc2626;
+  color:white;
+  padding:25px 35px;
+  border-radius:14px;
+  font-size:22px;
+  font-weight:bold;
+  z-index:9999;
+  box-shadow:0 0 25px rgba(220,38,38,.8);
+  text-align:center;
+  animation:panicBlink .6s infinite alternate;
+}
+
+@keyframes panicBlink{
+  from{opacity:1}
+  to{opacity:.65}
+}
+
+.footer-credit{
+  position:fixed;
+  bottom:10px;
+  left:50%;
+  transform:translateX(-50%);
+  color:rgba(255,255,255,0.25);
+  font-size:12px;
+  user-select:none;
+  pointer-events:none;
+}
+
+.login-logo{
+  width:190px;
+  height:auto;
+  margin:15px auto 20px auto;
+  display:block;
+  border-radius:50%;
+}
+
+.title-block{
+  display:flex;
+  flex-direction:column;
+  margin-right:auto;
+}
+
+.title-block h1{
+  margin:0 0 8px 0;
+}
+
+#welcome{
+  margin:0;
+  font-size:18px;
+  font-weight:600;
+}
+</style>
+</head>
+
+<body>
+
+<audio id="panicSound" src="panic.mp3"></audio>
+
+<div class="footer-credit">By SkyTrax</div>
+
+<div id="loginPage" class="page active">
+  <div class="center-page">
+    <div class="login-box">
+      <h1>Connexion MDT SAMS</h1>
+      <img src="sams-logo.png" class="login-logo">
+      <input id="loginMatricule" placeholder="Matricule">
+      <input id="loginPassword" type="password" placeholder="Mot de passe">
+      <br>
+      <button onclick="login()">Connexion</button>
+      <button class="blue" onclick="showPage('registerPage')">Créer un compte</button>
+    </div>
+  </div>
+</div>
+
+<div id="registerPage" class="page">
+  <div class="center-page">
+    <div class="login-box">
+      <h1>Créer un compte SAMS</h1>
+      <input id="regNom" placeholder="Nom">
+      <input id="regPrenom" placeholder="Prénom">
+      <input id="regMatricule" placeholder="Matricule">
+      <input id="regDiscordId" placeholder="ID Discord">
+      <input id="regPassword" type="password" placeholder="Mot de passe">
+      <br>
+      <button onclick="createAccount()">Créer le compte</button>
+      <button class="blue" onclick="showPage('loginPage')">Retour</button>
+    </div>
+  </div>
+</div>
+
+<div id="adminPage" class="page">
+  <div class="topbar">
+    <h1>Panel Admin SAMS</h1>
+    <button class="red" onclick="logout()">Déconnexion</button>
+  </div>
+
+  <div style="padding:20px">
+    <h2>Comptes en attente</h2>
+    <div id="pendingList"></div>
+
+    <h2>Tous les comptes SAMS</h2>
+    <div id="allUsersList"></div>
+  </div>
+</div>
+
+<div id="mdtPage" class="page">
+  <div class="topbar">
+    <div class="title-block">
+      <h1>MDT SAMS</h1>
+      <p id="welcome"></p>
+    </div>
+
+    <button id="serviceBtn" onclick="toggleService()">Prendre son service</button>
+    <button onclick="createUnit()">Créer une unité</button>
+    <button class="panic-btn" onclick="triggerPanic()">🚑 Emergency Button</button>
+    <button class="red" onclick="logout()">Déconnexion</button>
+  </div>
+
+  <div class="board" id="board"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://ytdpmoscnhoqcjhmpmue.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Me-K3HVx2w6ZwQUeLbeY8w_qGA5Cm72";
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let users = [];
+let units = [];
+let currentUser = null;
+
+async function loadData(){
+  const usersRes = await db.from("users").select("*").order("id", { ascending:true });
+  const unitsRes = await db.from("units").select("*");
+
+  if(usersRes.error){
+    alert("Erreur chargement comptes : " + usersRes.error.message);
+    return;
+  }
+
+  if(unitsRes.error){
+    alert("Erreur chargement unités : " + unitsRes.error.message);
+    return;
+  }
+
+  users = usersRes.data || [];
+  units = unitsRes.data || [];
+}
+
+async function saveData(){
+  // Avec Supabase, chaque action sauvegarde directement dans la base.
+}
+
+function showPage(pageId){
+  document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
+  document.getElementById(pageId).classList.add("active");
+}
+
+async function createAccount(){
+  const nom = document.getElementById("regNom").value.trim();
+  const prenom = document.getElementById("regPrenom").value.trim();
+  const matricule = document.getElementById("regMatricule").value.trim();
+  const discordId = document.getElementById("regDiscordId").value.trim();
+  const password = document.getElementById("regPassword").value.trim();
+
+  if(!nom || !prenom || !matricule || !discordId || !password){
+    alert("Remplis tous les champs.");
+    return;
+  }
+
+  await loadData();
+
+  if(users.find(u => u.matricule === matricule)){
+    alert("Ce matricule existe déjà.");
+    return;
+  }
+
+  if(users.find(u => u.discord_id === discordId)){
+    alert("Cet ID Discord est déjà utilisé.");
+    return;
+  }
+
+  const { error } = await db.from("users").insert({
+    nom,
+    prenom,
+    matricule,
+    discord_id: discordId,
+    password,
+    accepted:false,
+    admin:false,
+    service:false,
+    unit:"available"
+  });
+
+  if(error){
+    alert("Erreur création compte : " + error.message);
+    return;
+  }
+
+  alert("Compte créé. Il doit être accepté par un admin SAMS.");
+  showPage("loginPage");
+}
+
+async function login(){
+  await loadData();
+
+  const matricule = document.getElementById("loginMatricule").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
+
+  const user = users.find(u => u.matricule === matricule && u.password === password);
+
+  if(!user){
+    alert("Matricule ou mot de passe incorrect.");
+    return;
+  }
+
+  if(!user.accepted){
+    alert("Ton compte n'a pas encore été accepté.");
+    return;
+  }
+
+  currentUser = user;
+
+  if(user.admin){
+    renderAdmin();
+    showPage("adminPage");
+  } else {
+    document.getElementById("welcome").innerText =
+      `Bienvenue ${user.matricule} | ${user.prenom} ${user.nom}`;
+
+    document.getElementById("serviceBtn").innerText =
+      currentUser.service ? "Terminer son service" : "Prendre son service";
+
+    renderBoard();
+    showPage("mdtPage");
+  }
+}
+
+function renderAdmin(){
+  const pendingList = document.getElementById("pendingList");
+  const allUsersList = document.getElementById("allUsersList");
+
+  pendingList.innerHTML = "";
+  allUsersList.innerHTML = "";
+
+  const pending = users.filter(u => !u.accepted);
+
+  if(pending.length === 0){
+    pendingList.innerHTML = "<p>Aucun compte en attente.</p>";
+  } else {
+    pending.forEach(user => {
+      const div = document.createElement("div");
+      div.className = "card";
+
+      div.innerHTML = `
+        <strong>${user.matricule} | ${user.prenom} ${user.nom}</strong><br>
+        ID Discord : ${user.discord_id || "Non renseigné"}<br><br>
+        <button class="green" onclick="acceptUser('${user.matricule}')">Accepter</button>
+        <button class="red" onclick="deleteUser('${user.matricule}')">Refuser</button>
+      `;
+
+      pendingList.appendChild(div);
+    });
+  }
+
+  users.forEach(user => {
+    const div = document.createElement("div");
+    div.className = "card";
+
+    div.innerHTML = `
+      <strong>${user.matricule} | ${user.prenom} ${user.nom}</strong><br>
+      ID Discord : ${user.discord_id || "Non renseigné"}<br>
+      Admin : ${user.admin ? "Oui" : "Non"}<br>
+      Accepté : ${user.accepted ? "Oui" : "Non"}<br><br>
+
+      ${user.admin ? "" : `
+        <button class="red" onclick="deleteAccount('${user.matricule}')">Supprimer</button>
+      `}
+    `;
+
+    allUsersList.appendChild(div);
+  });
+}
+
+async function acceptUser(matricule){
+  const { error } = await db.from("users")
+    .update({ accepted:true })
+    .eq("matricule", matricule);
+
+  if(error){
+    alert("Erreur acceptation : " + error.message);
+    return;
+  }
+
+  await loadData();
+  renderAdmin();
+}
+
+async function deleteUser(matricule){
+  const { error } = await db.from("users").delete().eq("matricule", matricule);
+
+  if(error){
+    alert("Erreur suppression : " + error.message);
+    return;
+  }
+
+  await loadData();
+  renderAdmin();
+}
+
+async function deleteAccount(matricule){
+  const user = users.find(u => u.matricule === matricule);
+
+  if(!user) return;
+
+  if(!confirm("Supprimer " + user.prenom + " " + user.nom + " ?")) return;
+
+  const { error } = await db.from("users").delete().eq("matricule", matricule);
+
+  if(error){
+    alert("Erreur suppression : " + error.message);
+    return;
+  }
+
+  await loadData();
+  renderAdmin();
+}
+
+async function toggleService(){
+  currentUser.service = !currentUser.service;
+
+  const updateData = currentUser.service
+    ? { service:true, unit:"available" }
+    : { service:false, unit:null };
+
+  const { error } = await db.from("users")
+    .update(updateData)
+    .eq("matricule", currentUser.matricule);
+
+  if(error){
+    alert("Erreur service : " + error.message);
+    return;
+  }
+
+  await loadData();
+  currentUser = users.find(u => u.matricule === currentUser.matricule);
+
+  document.getElementById("serviceBtn").innerText =
+    currentUser.service ? "Terminer son service" : "Prendre son service";
+
+  renderBoard();
+}
+
+async function createUnit(){
+  const name = prompt("Nom de l'unité SAMS :");
+  if(!name) return;
+
+  const radio = prompt("Fréquence radio :", "SAMS 1") || "";
+  const vehicle = prompt("Véhicule :", "Ambulance") || "";
+  const equipment = prompt("Équipements médicaux séparés par des virgules :", "Sac médical, Défibrillateur") || "";
+
+  const { error } = await db.from("units").insert({
+    id:"sams_unit_" + Date.now(),
+    name:name,
+    status:"Disponible",
+    radio:radio,
+    vehicle:vehicle,
+    weapon:equipment
+  });
+
+  if(error){
+    alert("Erreur création unité : " + error.message);
+    return;
+  }
+
+  await loadData();
+  renderBoard();
+}
+
+async function changeUnitStatus(unitId, status){
+  const { error } = await db.from("units")
+    .update({ status })
+    .eq("id", unitId);
+
+  if(error){
+    alert("Erreur statut : " + error.message);
+    return;
+  }
+
+  await loadData();
+  renderBoard();
+}
+
+async function editUnitInfo(unitId){
+  const unit = units.find(u => u.id === unitId);
+  if(!unit) return;
+
+  const name = prompt("Nom de l'unité SAMS :", unit.name || "");
+  if(name === null) return;
+
+  const radio = prompt("Fréquence radio :", unit.radio || "");
+  if(radio === null) return;
+
+  const vehicle = prompt("Véhicule :", unit.vehicle || "");
+  if(vehicle === null) return;
+
+  const equipment = prompt("Équipements médicaux séparés par des virgules :", unit.weapon || "");
+  if(equipment === null) return;
+
+  const { error } = await db.from("units")
+    .update({
+      name: name,
+      radio: radio,
+      vehicle: vehicle,
+      weapon: equipment
+    })
+    .eq("id", unitId);
+
+  if(error){
+    alert("Erreur modification unité : " + error.message);
+    return;
+  }
+
+  await loadData();
+  renderBoard();
+}
+
+async function deleteUnitButton(unitId){
+  const unit = units.find(u => u.id === unitId);
+
+  if(!unit) return;
+
+  if(!confirm("Supprimer l'unité " + unit.name + " ?")) return;
+
+  await db.from("users").update({ unit:"available" }).eq("unit", unitId);
+
+  const { error } = await db.from("units").delete().eq("id", unitId);
+
+  if(error){
+    alert("Erreur suppression unité : " + error.message);
+    return;
+  }
+
+  await loadData();
+  renderBoard();
+}
+
+function renderBoard(){
+  const board = document.getElementById("board");
+
+  board.innerHTML = `
+    <div class="column available-column" ondragover="allowDrop(event)" ondrop="dropOfficer(event,'available')">
+      <h2>Effectifs SAMS non assignés</h2>
+      <div id="available"></div>
+    </div>
+  `;
+
+  units.forEach(unit => {
+    const equipmentHtml = (unit.weapon || "")
+      .split(",")
+      .filter(w => w.trim() !== "")
+      .map(w => `<span class="medical-badge">${w.trim()}</span>`)
+      .join("");
+
+    const column = document.createElement("div");
+    column.className = "column";
+    column.setAttribute("ondragover", "allowDrop(event)");
+    column.setAttribute("ondrop", `dropOfficer(event,'${unit.id}')`);
+
+    column.innerHTML = `
+      <div class="unit-header">
+        <h2 class="unit-title">${unit.name}</h2>
+
+        <div class="unit-actions">
+          <select class="unit-status-select" onchange="changeUnitStatus('${unit.id}', this.value)">
+            <option ${unit.status==="Disponible" ? "selected" : ""}>Disponible</option>
+            <option ${unit.status==="En intervention" ? "selected" : ""}>En intervention</option>
+            <option ${unit.status==="Transport patient" ? "selected" : ""}>Transport patient</option>
+            <option ${unit.status==="À l'hôpital" ? "selected" : ""}>À l'hôpital</option>
+            <option ${unit.status==="Retour hôpital" ? "selected" : ""}>Retour hôpital</option>
+            <option ${unit.status==="Pause" ? "selected" : ""}>Pause</option>
+            <option ${unit.status==="Hors service" ? "selected" : ""}>Hors service</option>
+            <option ${unit.status==="Renfort demandé" ? "selected" : ""}>Renfort demandé</option>
+            <option ${unit.status==="Code Rouge" ? "selected" : ""}>Code Rouge</option>
+            <option ${unit.status==="Indisponible" ? "selected" : ""}>Indisponible</option>
+          </select>
+
+          <button class="edit-unit-btn" onclick="editUnitInfo('${unit.id}')">✎</button>
+          <button class="delete-unit-btn" onclick="deleteUnitButton('${unit.id}')">✕</button>
+        </div>
+      </div>
+
+      <div class="unit-info">
+        <div class="radio-badge">${unit.radio || "Aucune fréquence"}</div>
+        <div class="vehicle-badge">${unit.vehicle || "Aucun véhicule"}</div>
+
+        <div class="medical-container">
+          ${equipmentHtml || `<span class="medical-badge">Aucun équipement</span>`}
+        </div>
+      </div>
+
+      <div id="${unit.id}"></div>
+    `;
+
+    board.appendChild(column);
+  });
+
+  users.filter(u => u.service).forEach(user => {
+    const card = document.createElement("div");
+    card.draggable = true;
+
+    card.ondragstart = function(event){
+      event.dataTransfer.setData("matricule", user.matricule);
+    };
+
+    card.className = user.unit === "available" ? "officer" : "patrol-card";
+
+    card.innerHTML = `
+      <strong>${user.matricule} | ${user.prenom} ${user.nom}</strong>
+    `;
+
+    const container = document.getElementById(user.unit || "available");
+
+    if(container){
+      container.appendChild(card);
+    }
+  });
+}
+
+function allowDrop(event){
+  event.preventDefault();
+}
+
+async function dropOfficer(event, unitId){
+  event.preventDefault();
+
+  const matricule = event.dataTransfer.getData("matricule");
+
+  const { error } = await db.from("users")
+    .update({ unit:unitId })
+    .eq("matricule", matricule);
+
+  if(error){
+    alert("Erreur déplacement : " + error.message);
+    return;
+  }
+
+  await loadData();
+  renderBoard();
+}
+
+function showPanicPopup(alertData){
+  const oldPopup = document.getElementById("panicPopup");
+  if(oldPopup) oldPopup.remove();
+
+  const popup = document.createElement("div");
+  popup.id = "panicPopup";
+  popup.className = "panic-popup";
+
+  popup.innerText =
+    `${alertData.matricule} | ${alertData.prenom} ${alertData.nom} demande une assistance médicale urgente`;
+
+  document.body.appendChild(popup);
+
+  setTimeout(() => {
+    if(popup) popup.remove();
+  }, 10000);
+}
+
+async function triggerPanic(){
+  if(!currentUser){
+    alert("Tu dois être connecté.");
+    return;
+  }
+
+  const sound = document.getElementById("panicSound");
+
+  if(sound){
+    sound.pause();
+    sound.currentTime = 0;
+    sound.play().catch(() => {});
+  }
+
+  const panicData = {
+    matricule: currentUser.matricule,
+    nom: currentUser.nom,
+    prenom: currentUser.prenom
+  };
+
+  showPanicPopup(panicData);
+
+  const { error } = await db.from("panic_alerts").insert(panicData);
+
+  if(error){
+    alert("Erreur emergency button : " + error.message);
+  }
+}
+
+function logout(){
+  currentUser = null;
+  showPage("loginPage");
+}
+
+db.channel("sams-mdt-sync")
+  .on("postgres_changes", { event:"*", schema:"public", table:"users" }, async () => {
+    await loadData();
+
+    if(currentUser){
+      const updatedUser = users.find(u => u.matricule === currentUser.matricule);
+      if(updatedUser) currentUser = updatedUser;
+
+      if(document.getElementById("mdtPage").classList.contains("active")) renderBoard();
+      if(document.getElementById("adminPage").classList.contains("active")) renderAdmin();
+    }
+  })
+  .on("postgres_changes", { event:"*", schema:"public", table:"units" }, async () => {
+    await loadData();
+
+    if(document.getElementById("mdtPage").classList.contains("active")) renderBoard();
+    if(document.getElementById("adminPage").classList.contains("active")) renderAdmin();
+  })
+  .subscribe();
+
+
+db.channel("sams-panic-sync")
+  .on("postgres_changes", { event:"INSERT", schema:"public", table:"panic_alerts" }, payload => {
+    showPanicPopup(payload.new);
+  })
+  .subscribe();
+
+loadData();
+</script>
+
+</body>
+</html>
