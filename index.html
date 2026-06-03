@@ -8,11 +8,19 @@
 :root{
   --sams-red:#e30613;
   --sams-blue:#0057ff;
-  --sams-dark:#0f172a;
-  --sams-panel:#1e293b;
-  --sams-card:#334155;
-  --sams-topbar:#111827;
+  --sams-cyan:#38bdf8;
+  --sams-green:#22c55e;
+  --sams-dark:#050914;
+  --sams-panel:#0f172a;
+  --sams-card:#1e293b;
+  --sams-card2:#334155;
+  --sams-topbar:#08111f;
   --sams-white:#ffffff;
+  --sams-muted:#94a3b8;
+}
+
+*{
+  box-sizing:border-box;
 }
 
 body{
@@ -24,25 +32,6 @@ body{
 
 .page{display:none}
 .page.active{display:block}
-
-.center-page{
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;  
-}
-
-.login-box{
-  background:var(--sams-panel);
-  padding:35px;
-  border-radius:18px;
-  width:360px;
-  text-align:center;
-  border:2px solid var(--sams-red);
-  box-shadow:0 0 25px rgba(227,6,19,.25);
-}
-
-.login-box input{width:90%}
 
 input,button,select{
   padding:12px;
@@ -63,6 +52,258 @@ button:hover{opacity:.85}
 .red{background:#dc2626}
 .green{background:#16a34a}
 .blue{background:var(--sams-blue)}
+
+.center-page{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;  
+}
+
+/* ===== NOUVELLE INTERFACE LOGIN STYLE SAMS SECURE ===== */
+
+.secure-login-page{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:70px;
+  padding:40px;
+  background:
+    radial-gradient(circle at 22% 35%, rgba(56,189,248,.16), transparent 32%),
+    radial-gradient(circle at 70% 62%, rgba(0,87,255,.20), transparent 36%),
+    radial-gradient(circle at 50% 50%, rgba(227,6,19,.07), transparent 40%),
+    linear-gradient(135deg,#030712,#07111f 55%,#050914);
+  overflow:hidden;
+  position:relative;
+}
+
+.secure-login-page::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(56,189,248,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56,189,248,.035) 1px, transparent 1px);
+  background-size:48px 48px;
+  mask-image:linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+  pointer-events:none;
+}
+
+.secure-login-page::after{
+  content:"";
+  position:absolute;
+  width:620px;
+  height:620px;
+  border-radius:50%;
+  left:-180px;
+  top:50%;
+  transform:translateY(-50%);
+  background:radial-gradient(circle, rgba(56,189,248,.18), transparent 62%);
+  filter:blur(8px);
+  pointer-events:none;
+}
+
+.login-left,
+.secure-box{
+  position:relative;
+  z-index:2;
+}
+
+.login-left{
+  width:330px;
+}
+
+.pulse-icon,
+.secure-icon{
+  width:54px;
+  height:54px;
+  border-radius:16px;
+  background:linear-gradient(135deg,var(--sams-blue),var(--sams-cyan));
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:30px;
+  box-shadow:0 0 25px rgba(56,189,248,.55);
+  border:1px solid rgba(255,255,255,.22);
+}
+
+.login-left h1{
+  font-size:58px;
+  margin:28px 0 0;
+  letter-spacing:6px;
+  text-shadow:0 0 24px rgba(56,189,248,.5);
+}
+
+.login-left .terminal-subtitle{
+  color:var(--sams-muted);
+  margin:2px 0 8px;
+  font-size:12px;
+  letter-spacing:2px;
+  font-weight:bold;
+}
+
+.login-line{
+  width:100%;
+  height:2px;
+  background:linear-gradient(90deg,var(--sams-cyan),transparent);
+  margin:12px 0 30px;
+}
+
+.info-card{
+  background:rgba(30,41,59,.58);
+  border:1px solid rgba(148,163,184,.18);
+  padding:14px 16px;
+  border-radius:10px;
+  margin-bottom:12px;
+  font-weight:bold;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  box-shadow:0 12px 30px rgba(0,0,0,.15);
+  backdrop-filter:blur(10px);
+}
+
+.info-card-icon{
+  width:32px;
+  height:32px;
+  border-radius:8px;
+  background:rgba(56,189,248,.14);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:var(--sams-cyan);
+  flex-shrink:0;
+}
+
+.info-card span{
+  color:var(--sams-muted);
+  font-size:12px;
+  font-weight:normal;
+}
+
+.login-date{
+  margin-top:30px;
+  color:#64748b;
+  font-size:12px;
+}
+
+.secure-box{
+  width:460px;
+  padding:34px;
+  background:rgba(15,23,42,.82);
+  border:1px solid rgba(56,189,248,.55);
+  border-radius:18px;
+  box-shadow:
+    0 0 45px rgba(37,99,235,.20),
+    inset 0 0 30px rgba(15,23,42,.95);
+  backdrop-filter:blur(14px);
+}
+
+.secure-icon{
+  margin:0 auto 16px;
+}
+
+.secure-box h2{
+  text-align:center;
+  margin:8px 0 5px;
+  font-size:27px;
+}
+
+.secure-box .secure-desc{
+  text-align:center;
+  color:var(--sams-muted);
+  margin:0 0 18px;
+  font-size:13px;
+  font-weight:bold;
+}
+
+.online-status{
+  background:rgba(15,23,42,.92);
+  border:1px solid rgba(148,163,184,.15);
+  color:#dbeafe;
+  padding:10px 12px;
+  border-radius:8px;
+  margin:18px 0 20px;
+  font-size:13px;
+}
+
+.online-status b{
+  color:var(--sams-green);
+}
+
+.secure-box label{
+  display:block;
+  margin:12px 0 6px;
+  font-size:12px;
+  color:#cbd5e1;
+  font-weight:bold;
+  text-transform:uppercase;
+}
+
+.secure-box input{
+  width:100%;
+  background:#0b1220;
+  color:white;
+  border:1px solid #334155;
+  margin:0 0 10px;
+  height:46px;
+}
+
+.secure-box input:focus{
+  outline:none;
+  border-color:var(--sams-cyan);
+  box-shadow:0 0 12px rgba(56,189,248,.35);
+}
+
+.secure-main-btn{
+  width:100%;
+  margin:12px 0 8px;
+  background:linear-gradient(90deg,var(--sams-blue),var(--sams-cyan));
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 0 18px rgba(56,189,248,.22);
+}
+
+.small-btn{
+  display:block;
+  width:max-content;
+  margin:10px auto 0;
+  background:rgba(0,87,255,.22) !important;
+  color:#dbeafe;
+  border:1px solid rgba(56,189,248,.35);
+  padding:8px 14px;
+  font-size:12px;
+}
+
+.secure-footer{
+  text-align:center;
+  font-size:11px;
+  color:#64748b;
+  margin:14px 0 0;
+}
+
+.register-box{
+  width:420px;
+  padding:35px;
+  background:rgba(15,23,42,.88);
+  border:1px solid rgba(56,189,248,.55);
+  border-radius:18px;
+  box-shadow:0 0 35px rgba(37,99,235,.22);
+  text-align:center;
+}
+
+.register-box input{
+  width:92%;
+  background:#0b1220;
+  color:white;
+  border:1px solid #334155;
+}
+
+.register-box h1{
+  margin-top:0;
+}
+
+/* ===== MDT / ADMIN ===== */
 
 .topbar{
   padding:20px;
@@ -98,7 +339,7 @@ button:hover{opacity:.85}
 }
 
 .column{
-  background:var(--sams-panel);
+  background:var(--sams-card);
   width:430px;
   min-height:250px;
   padding:15px;
@@ -112,14 +353,14 @@ button:hover{opacity:.85}
 }
 
 .card{
-  background:var(--sams-card);
+  background:var(--sams-card2);
   padding:12px;
   border-radius:10px;
   margin:10px;
 }
 
 .officer{
-  background:var(--sams-card);
+  background:var(--sams-card2);
   padding:8px 10px;
   border-radius:8px;
   margin:6px 0;
@@ -129,7 +370,7 @@ button:hover{opacity:.85}
 }
 
 .patrol-card{
-  background:var(--sams-card);
+  background:var(--sams-card2);
   padding:12px;
   border-radius:10px;
   margin:10px 0;
@@ -174,6 +415,7 @@ button:hover{opacity:.85}
   cursor:pointer;
   width:150px;
 }
+
 .delete-unit-btn{
   background:#dc2626;
   padding:6px 9px;
@@ -266,6 +508,7 @@ button:hover{opacity:.85}
   font-size:12px;
   user-select:none;
   pointer-events:none;
+  z-index:5;
 }
 
 .login-logo{
@@ -291,6 +534,23 @@ button:hover{opacity:.85}
   font-size:18px;
   font-weight:600;
 }
+
+@media(max-width:900px){
+  .secure-login-page{
+    flex-direction:column;
+    gap:30px;
+  }
+
+  .login-left,
+  .secure-box{
+    width:100%;
+    max-width:460px;
+  }
+
+  .login-left h1{
+    font-size:46px;
+  }
+}
 </style>
 </head>
 
@@ -301,31 +561,70 @@ button:hover{opacity:.85}
 <div class="footer-credit">By SkyTrax</div>
 
 <div id="loginPage" class="page active">
-  <div class="center-page">
-    <div class="login-box">
-      <h1>Connexion MDT SAMS</h1>
-      <img src="logo.png" class="login-logo">
-      <input id="loginMatricule" placeholder="Matricule">
-      <input id="loginPassword" type="password" placeholder="Mot de passe">
-      <br>
-      <button onclick="login()">Connexion</button>
-      <button class="blue" onclick="showPage('registerPage')">Créer un compte</button>
+  <div class="secure-login-page">
+
+    <div class="login-left">
+      <div class="pulse-icon">⌁</div>
+      <h1>SAMS</h1>
+      <p class="terminal-subtitle">MEDICAL DATA TERMINAL</p>
+      <div class="login-line"></div>
+
+      <div class="info-card">
+        <div class="info-card-icon">☰</div>
+        <div>Menu<br><span>Navigation rapide</span></div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-icon">🚑</div>
+        <div>Véhicules<br><span>Ambulances SAMS</span></div>
+      </div>
+
+      <div class="info-card">
+        <div class="info-card-icon">➜</div>
+        <div>Connexion<br><span>Accès au terminal</span></div>
+      </div>
+
+      <div class="login-date">Terminal | SAMS Secure</div>
     </div>
+
+    <div class="secure-box">
+      <div class="secure-icon">⌁</div>
+      <h2>Connexion sécurisée</h2>
+      <p class="secure-desc">Accès réservé au personnel SAMS</p>
+
+      <div class="online-status">
+        <b>●</b> Système et données accessibles
+      </div>
+
+      <label for="loginMatricule">Matricule</label>
+      <input id="loginMatricule" placeholder="Votre matricule">
+
+      <label for="loginPassword">Mot de passe</label>
+      <input id="loginPassword" type="password" placeholder="Votre mot de passe">
+
+      <button class="secure-main-btn" onclick="login()">ACCÉDER AU TERMINAL</button>
+      <button class="small-btn" onclick="showPage('registerPage')">Créer un compte</button>
+
+      <p class="secure-footer">San Andreas Medical Services © 2026</p>
+    </div>
+
   </div>
 </div>
 
 <div id="registerPage" class="page">
-  <div class="center-page">
-    <div class="login-box">
+  <div class="secure-login-page">
+    <div class="register-box">
+      <div class="secure-icon">⌁</div>
       <h1>Créer un compte SAMS</h1>
+
       <input id="regNom" placeholder="Nom">
       <input id="regPrenom" placeholder="Prénom">
       <input id="regMatricule" placeholder="Matricule">
       <input id="regDiscordId" placeholder="ID Discord">
       <input id="regPassword" type="password" placeholder="Mot de passe">
-      <br>
-      <button onclick="createAccount()">Créer le compte</button>
-      <button class="blue" onclick="showPage('loginPage')">Retour</button>
+
+      <button class="secure-main-btn" onclick="createAccount()">Créer le compte</button>
+      <button class="small-btn" onclick="showPage('loginPage')">Retour connexion</button>
     </div>
   </div>
 </div>
@@ -354,7 +653,6 @@ button:hover{opacity:.85}
 
     <button id="serviceBtn" onclick="toggleService()">Prendre son service</button>
     <button onclick="createUnit()">Créer une unité</button>
-    <button class="panic-btn" onclick="triggerPanic()">🚑 Emergency Button</button>
     <button class="red" onclick="logout()">Déconnexion</button>
   </div>
 
