@@ -731,6 +731,123 @@ button:hover{opacity:.85}
   .column{width:100%}
 }
 
+
+
+/* ===== CORRECTIONS DASHBOARD SAMS : cartes larges + stats par statut + menu sombre ===== */
+#mdtPage{
+  background:
+    radial-gradient(circle at 12% 0%, rgba(0,87,255,.28), transparent 28%),
+    radial-gradient(circle at 88% 2%, rgba(227,6,19,.24), transparent 28%),
+    linear-gradient(180deg,#050914,#07101f 55%,#050914);
+}
+
+#mdtPage .topbar{
+  background:linear-gradient(90deg,rgba(5,9,20,.98),rgba(8,17,31,.96));
+}
+
+.dashboard-wrapper{
+  padding:24px;
+}
+
+.dashboard-stats{
+  grid-template-columns:repeat(4,minmax(210px,1fr));
+  gap:18px;
+}
+
+.stat-card{
+  min-height:96px;
+  border-radius:18px;
+}
+
+.stat-blue{border-left:5px solid var(--sams-blue)}
+.stat-green{border-left:5px solid var(--sams-green)}
+.stat-red{border-left:5px solid var(--sams-red)}
+.stat-orange{border-left:5px solid #f97316}
+
+.board{
+  display:grid;
+  grid-template-columns: 430px repeat(auto-fill, minmax(520px, 520px));
+  align-items:start;
+  gap:20px;
+}
+
+.column{
+  width:100%;
+  min-height:270px;
+  padding:20px;
+  border-radius:20px;
+  background:linear-gradient(180deg,rgba(30,41,59,.96),rgba(15,23,42,.98));
+  border:1px solid rgba(148,163,184,.18);
+  border-top:5px solid var(--sams-red);
+}
+
+.available-column{
+  min-height:270px;
+  border:2px dashed rgba(0,87,255,.85);
+  border-top:5px solid var(--sams-blue);
+}
+
+.unit-header{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+}
+
+.unit-title{
+  flex:1 1 auto;
+  min-width:0;
+  max-width:none;
+  font-size:23px;
+  line-height:1.15;
+  white-space:normal;
+  overflow-wrap:break-word;
+}
+
+.unit-actions{
+  flex:0 0 auto;
+  display:flex;
+  gap:8px;
+}
+
+.unit-status-select{
+  width:190px;
+  height:42px;
+  color:white;
+  background:linear-gradient(90deg,var(--sams-blue),#2563eb);
+  border:1px solid rgba(255,255,255,.18);
+  outline:none;
+  color-scheme:dark;
+}
+
+.unit-status-select option{
+  background:#0f172a;
+  color:#ffffff;
+}
+
+.status-disponible{border-top-color:var(--sams-green)}
+.status-en-intervention,.status-transport-patient,.status-a-l-hopital,.status-retour-hopital,.status-renfort-demande,.status-code-rouge{
+  border-top-color:var(--sams-red);
+  box-shadow:0 18px 45px rgba(227,6,19,.14);
+}
+.status-pause{border-top-color:#f97316}
+.status-hors-service,.status-indisponible{border-top-color:#64748b}
+
+.radio-badge{background:#991b1b}
+.vehicle-badge{background:#15803d}
+.medical-badge{background:linear-gradient(90deg,var(--sams-blue),#2563eb)}
+
+.officer,.patrol-card{
+  font-size:15px;
+  padding:13px 14px;
+  border-radius:12px;
+}
+
+@media(max-width:1100px){
+  .dashboard-stats{grid-template-columns:repeat(2,1fr)}
+  .board{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 
@@ -843,7 +960,7 @@ button:hover{opacity:.85}
         <strong id="statService">0</strong>
       </div>
       <div class="stat-card stat-green">
-        <span>Disponibles</span>
+        <span>Unités disponibles</span>
         <strong id="statAvailable">0</strong>
       </div>
       <div class="stat-card stat-red">
@@ -1190,9 +1307,20 @@ async function deleteUnitButton(unitId){
 
 function updateDashboardStats(){
   const service = users.filter(u => u.service).length;
-  const available = users.filter(u => u.service && (u.unit === "available" || !u.unit)).length;
+
+  // Ici on compte les UNITÉS selon leur statut, pas les effectifs non assignés.
+  // Exemple : 1 unité en "En intervention" = 0 disponible et 1 intervention.
+  const available = units.filter(u => u.status === "Disponible").length;
   const unitCount = units.length;
-  const interventions = units.filter(u => !["Disponible", "Pause", "Hors service", "Indisponible"].includes(u.status)).length;
+  const interventionStatuses = [
+    "En intervention",
+    "Transport patient",
+    "À l'hôpital",
+    "Retour hôpital",
+    "Renfort demandé",
+    "Code Rouge"
+  ];
+  const interventions = units.filter(u => interventionStatuses.includes(u.status)).length;
 
   const statService = document.getElementById("statService");
   const statAvailable = document.getElementById("statAvailable");
@@ -1224,7 +1352,12 @@ function renderBoard(){
       .join("");
 
     const column = document.createElement("div");
-    column.className = "column";
+    const statusClass = "status-" + String(unit.status || "Disponible")
+      .toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "");
+    column.className = "column " + statusClass;
     column.setAttribute("ondragover", "allowDrop(event)");
     column.setAttribute("ondrop", `dropOfficer(event,'${unit.id}')`);
 
