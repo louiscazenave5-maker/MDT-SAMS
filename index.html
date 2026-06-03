@@ -551,6 +551,186 @@ button:hover{opacity:.85}
     font-size:46px;
   }
 }
+
+
+/* ===== INTERFACE MDT SAMS PREMIUM ===== */
+#mdtPage{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(0,87,255,.22), transparent 28%),
+    radial-gradient(circle at 85% 0%, rgba(227,6,19,.20), transparent 25%),
+    linear-gradient(180deg,#050914,#0b1020 55%,#060914);
+}
+
+#mdtPage .topbar{
+  padding:18px 26px;
+  background:rgba(8,17,31,.88);
+  border-bottom:1px solid rgba(56,189,248,.22);
+  box-shadow:0 10px 35px rgba(0,0,0,.25);
+  backdrop-filter:blur(12px);
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+
+#mdtPage .title-block h1{
+  font-size:28px;
+  letter-spacing:1px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+#mdtPage .title-block h1::before{
+  content:"⌁";
+  width:36px;
+  height:36px;
+  border-radius:12px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,var(--sams-blue),#38bdf8);
+  box-shadow:0 0 20px rgba(0,87,255,.55);
+  font-size:22px;
+}
+
+#welcome{
+  color:#cbd5e1;
+  font-size:14px;
+}
+
+#mdtPage .topbar button{
+  background:rgba(15,23,42,.95);
+  border:1px solid rgba(148,163,184,.22);
+  box-shadow:0 0 16px rgba(0,0,0,.18);
+}
+
+#mdtPage .topbar button:hover{
+  transform:translateY(-1px);
+  border-color:#38bdf8;
+  opacity:1;
+}
+
+#mdtPage #serviceBtn{
+  background:linear-gradient(90deg,var(--sams-red),#ff5a5f);
+}
+
+.dashboard-wrapper{
+  padding:24px;
+}
+
+.dashboard-stats{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(180px,1fr));
+  gap:16px;
+  margin-bottom:20px;
+}
+
+.stat-card{
+  background:linear-gradient(180deg,rgba(30,41,59,.90),rgba(15,23,42,.92));
+  border:1px solid rgba(148,163,184,.16);
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 18px 40px rgba(0,0,0,.25);
+  position:relative;
+  overflow:hidden;
+}
+
+.stat-card::after{
+  content:"";
+  position:absolute;
+  right:-35px;
+  top:-35px;
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  background:rgba(56,189,248,.12);
+}
+
+.stat-card span{
+  color:#94a3b8;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.7px;
+}
+
+.stat-card strong{
+  display:block;
+  font-size:30px;
+  margin-top:8px;
+}
+
+.stat-red{border-left:4px solid var(--sams-red)}
+.stat-blue{border-left:4px solid var(--sams-blue)}
+.stat-green{border-left:4px solid #22c55e}
+.stat-orange{border-left:4px solid #f97316}
+
+.board{
+  padding:0;
+  gap:18px;
+}
+
+.column{
+  width:390px;
+  min-height:300px;
+  background:linear-gradient(180deg,rgba(30,41,59,.96),rgba(15,23,42,.96));
+  border:1px solid rgba(148,163,184,.15);
+  border-top:4px solid var(--sams-red);
+  border-radius:18px;
+  box-shadow:0 18px 40px rgba(0,0,0,.24);
+}
+
+.column h2{
+  font-size:21px;
+  margin-top:0;
+}
+
+.available-column{
+  background:linear-gradient(180deg,rgba(8,17,31,.96),rgba(15,23,42,.96));
+  border:2px dashed rgba(0,87,255,.85);
+  border-top:4px solid var(--sams-blue);
+}
+
+.officer,.patrol-card{
+  background:rgba(51,65,85,.92);
+  border:1px solid rgba(148,163,184,.12);
+  box-shadow:0 10px 20px rgba(0,0,0,.18);
+  transition:.15s ease;
+}
+
+.officer:hover,.patrol-card:hover{
+  transform:translateY(-2px);
+  border-color:rgba(56,189,248,.45);
+}
+
+.unit-title{
+  min-width:150px;
+  max-width:150px;
+  font-size:24px;
+}
+
+.unit-status-select{
+  height:40px;
+  border:1px solid rgba(255,255,255,.16);
+  background:linear-gradient(90deg,var(--sams-blue),#2563eb);
+}
+
+.edit-unit-btn,.delete-unit-btn{
+  height:40px;
+  min-width:40px;
+}
+
+.radio-badge,.vehicle-badge,.medical-badge{
+  padding:5px 9px;
+  border-radius:7px;
+}
+
+@media(max-width:950px){
+  #mdtPage .topbar{flex-wrap:wrap}
+  .dashboard-stats{grid-template-columns:repeat(2,1fr)}
+  .column{width:100%}
+}
+
 </style>
 </head>
 
@@ -656,7 +836,28 @@ button:hover{opacity:.85}
     <button class="red" onclick="logout()">Déconnexion</button>
   </div>
 
-  <div class="board" id="board"></div>
+  <div class="dashboard-wrapper">
+    <div class="dashboard-stats">
+      <div class="stat-card stat-blue">
+        <span>Effectifs en service</span>
+        <strong id="statService">0</strong>
+      </div>
+      <div class="stat-card stat-green">
+        <span>Disponibles</span>
+        <strong id="statAvailable">0</strong>
+      </div>
+      <div class="stat-card stat-red">
+        <span>Unités créées</span>
+        <strong id="statUnits">0</strong>
+      </div>
+      <div class="stat-card stat-orange">
+        <span>Interventions</span>
+        <strong id="statInterventions">0</strong>
+      </div>
+    </div>
+
+    <div class="board" id="board"></div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -986,7 +1187,26 @@ async function deleteUnitButton(unitId){
   renderBoard();
 }
 
+
+function updateDashboardStats(){
+  const service = users.filter(u => u.service).length;
+  const available = users.filter(u => u.service && (u.unit === "available" || !u.unit)).length;
+  const unitCount = units.length;
+  const interventions = units.filter(u => !["Disponible", "Pause", "Hors service", "Indisponible"].includes(u.status)).length;
+
+  const statService = document.getElementById("statService");
+  const statAvailable = document.getElementById("statAvailable");
+  const statUnits = document.getElementById("statUnits");
+  const statInterventions = document.getElementById("statInterventions");
+
+  if(statService) statService.innerText = service;
+  if(statAvailable) statAvailable.innerText = available;
+  if(statUnits) statUnits.innerText = unitCount;
+  if(statInterventions) statInterventions.innerText = interventions;
+}
+
 function renderBoard(){
+  updateDashboardStats();
   const board = document.getElementById("board");
 
   board.innerHTML = `
